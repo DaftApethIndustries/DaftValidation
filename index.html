@@ -175,14 +175,14 @@
 		* Name will be how it is referred to in the data-validation rules array (here NewValidation)
 		* Function is the function used to validate the data (here exampleNewValidation)
 		*/
-		looseValidation.addValidationFunction('NewValidation', exampleNewValidation);
+		$('.looseValidation').looseValidation('addValidationFunction', 'NewValidation', exampleNewValidation);
 
 		/**
 		* Set a success function. rootObject name will be your namespace
 		* Name will be how it is referred to in the data-success array (here NewSuccess)
 		* Function is the function to call (here newSuccessCallback)
 		*/
-		looseValidation.addSuccessFunction('NewSuccess', newSuccessCallback);
+		$('.looseValidation').looseValidation('addSuccessFunction', 'NewSuccess', newSuccessCallback);
 
 
 		/*** USAGE ***/
@@ -201,9 +201,21 @@
 
 	<script>
 		$(document).ready(function() {
-				var formToValidate = $('.looseValidation');
-				looseValidation.init(formToValidate);
-			});
+			$('.looseValidation').looseValidation();
+		});
+
+		/*
+		* Defaults:
+
+				sValidationSelect : '.looseValidation',
+				sValidationFailed : 'error',
+				sValidationPassed : 'valid',
+				sValidationPassedMessage : 'successMessage',
+				sValidationAttr : 'data-validation',
+				sSuccessAttr : 'data-success',
+				sServerErrorBlockSelect : '.errorBlock',
+				defaultErrorText : 'Whoops'
+		*/
 		
 	</script>
 
