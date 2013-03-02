@@ -285,7 +285,8 @@
 				sValidationAttr : 'data-validation',
 				sSuccessAttr : 'data-success',
 				sServerErrorBlockSelect : '.errorBlock',
-				defaultErrorText : 'Whoops'
+				defaultErrorText : 'Whoops',
+				useErrorBlock : false
 			},
 			options = $.extend( {}, defaults, settings ),
 			eServerErrorBlock;
