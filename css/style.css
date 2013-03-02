@@ -1,0 +1,68 @@
+
+/** CONTENTS - validation styling
+---------------------------------------- 
+
+	- Page setup
+	- Plugin styles
+	- Visual styling
+
+
+*/
+
+
+/**** Page setup ****/
+body {
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	margin: 0;
+}
+form {
+	margin:0 auto;
+	max-width: 970px;
+}
+
+a, a:visited {
+	color:#1E7EAE;
+	text-decoration: none;
+}
+
+h1 {
+	font-size: 18px;
+	margin-bottom: 6px;
+}
+h2 {
+	font-size: 16px;
+	margin:6px 0;
+}
+
+form > p {
+	font-style: italic;
+}
+.example {
+	padding: 20px 0;
+}
+.example > label {
+	display: inline-block;
+	min-width: 200px;
+	margin-right: 12px;
+}
+/**** Plugin styles ****/
+
+		
+/**** visual styling ****/
+input.error,
+select.error,
+textarea.error {
+	outline: 2px solid red;
+}
+p.error,
+p.successMessage {
+	color: red;
+	display: inline-block;
+	font-size:14px;
+	margin-bottom:12px; 
+	margin-left: 10px;
+}
+
+p.successMessage {
+	color: green;
+}

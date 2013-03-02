@@ -1,0 +1,211 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8" />
+	
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/style.css">
+
+
+<title>looseValidation</title>
+
+
+
+</head>
+
+<body>
+		
+
+
+<form novalidate="novalidate" action="#" class="looseValidation">
+
+	<h1>Validation examples</h1>
+<p>The validation works from JSON format data on the form elements.</p>
+
+		<h2 class="notForIntegration">Error validations</h2>
+		<ul>
+			<li><a href="#required">required</a></li>
+			<li><a href="#requiredIf">requiredIf</a></li>
+			<li><a href="#requiredIfNot">requiredIfNot</a></li>
+			<li><a href="#numeric">numeric</a></li>
+			<li><a href="#email">email</a></li>
+			<li><a href="#password">password </a></li>
+			<li><a href="#postcode">postcode</a></li> 
+			<li><a href="#matchesField">matchesField</a></li>
+			<li><a href="#minchars">minchars</a></li>
+			<li><a href="#regex">regex</a></li>
+			<li><a href="#multiple">multiple validations</a></li>
+		</ul>
+
+		<h2 class="notForIntegration">Success messages/functions</h2>
+		<ul>
+			<li><a href="#success">success</a></li>
+			<li><a href="#passwordStrength">passwordStrength</a></li>
+		</ul>
+
+		<h2 class="notForIntegration">Add a new rule</h2>
+		<ul>
+			<li><a href="#new_rule">Add a new rule</a></li>
+		</ul>
+
+		<hr />
+
+		<div class="example">
+			<label for="required">Required</label>
+			<input id="required" type="text" 
+				data-validation='{"rules":["required"],"messages":["Please fill this in"]}' data-success='{ "messages" : "Success" }' />
+		</div>
+
+		<div class="example">
+			<label for="required">Required Select</label>
+			<select id="required" type="text" data-validation='{"rules":["required"],"messages":["Please fill this in"]}'>
+				<option>Select an option</option>
+				<option value="selected">Selected</option>
+			</select>
+		</div>
+
+
+		<div class="example">
+			<label for="requiredIf">requiredIf</label>
+			<input id="requiredIf" type="text" data-validation='{"rules":["requiredIf"],"messages":["Please fill this in"],"params":["requiredIf-checkbox"]}'  />
+		</div>
+
+		
+
+		<div class="example">
+			<label for="requiredIf-checkbox">Make requiredIf required</label>
+			<input id="requiredIf-checkbox" type="checkbox" />
+		</div>
+
+		<p>The <strong>requiredIf</strong> rule checks if another item has a value and if it DOES requires itself to be filled in.</p>
+
+
+		<div class="example">
+			<label for="requiredIfNot">requiredIfNot</label>
+			<input id="requiredIf" type="text" data-validation='{"rules":["requiredIfNot"],"messages":["Please fill this in"],"params":["requiredIfNot-checkbox"]}'  />
+		</div>
+
+		<div class="example">
+			<label for="requiredIfNot-checkbox">Make requiredIfNot required</label>
+			<input id="requiredIfNot-checkbox" type="checkbox" />
+		</div>
+
+		<p>The <strong>requiredIfNot</strong> rule checks if another item has a value and if it DOES NOT requires itself to be filled in.</p>
+
+		<div class="example">
+			<label for="numeric">numeric</label>
+			<input id="numeric" type="text" data-validation='{"rules":["numeric"],"messages":["Data must be numeric"]}'  />
+		</div>
+
+		<div class="example">
+			<label for="email">email</label>
+			<input id="email" type="text" data-validation='{"rules":["email"],"messages":["Not a valid email"]}'  />
+		</div>
+
+		
+		<div class="example">
+			<label for="password">password</label>
+			<input id="password" type="text" data-validation='{"rules":["password"],"messages":["Your password must be over 8 characters, contain upper and lower case and either numerals or symbols."]}'  />
+		</div>
+
+		<p>The <strong>password</strong> rule validates the data is over 8 characters, contains upper and lower case and either numerals or symbols.</p>
+
+		<div class="example">
+			<label for="postcode">postcode</label>
+			<input id="postcode" type="text" data-validation='{"rules":["postcode"],"messages":["Not ."]}'  />
+		</div>
+
+		<p>Test that the value matches a valid uk <strong>postcode</strong><br />
+		Accepted formats: 1. LN NLL eg N1 1AA 2. LLN NLL eg SW4 0QL 3. LNN NLL eg M23 4PJ <br />
+		4. LLNN NLL eg WS14 0JT 5. LLNL NLL eg SW1N 4TB 6. LNL NLL eg W1C 8LQ</p>
+
+		<div class="example">
+			<label for="email">email</label>
+			<input id="email" type="text" data-validation='{"rules":["email"],"messages":["Not a valid email"]}'  />
+		</div>
+
+		<div class="example">
+			<label for="matchesField">matchesField</label>
+			<input id="matchesField" type="text" data-validation='{"rules":["matchesField"],"messages":["This value must match field to match"], "params":["matchesField2"]}'  />
+		</div>
+
+		<div class="example">
+			<label for="matchesField2">field to match</label>
+			<input id="matchesField2" type="text" />
+		</div>
+
+		<div class="example">
+			<label for="minchars">minchars</label>
+			<input id="minchars" type="text" data-validation='{"rules":["minchars"],"messages":["This value must be at least 5 characters"], "params":["5"]}'  />
+		</div>
+
+		<div class="example">
+			<label for="regex">regex</label>
+			<input id="regex" type="text" data-validation='{"rules":["regex"],"messages":["Data did not pass the regex"], "params":["([\\w-+]+(?:\\.[\\w-+]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})"]}'  />
+		</div>
+		<p>Regex example, this regex checks against an email validation regex (example regex checks for a valid email)</p>
+
+
+		<div class="example">
+			<label for="multiple">multiple validations</label>
+			<input id="multiple" type="text" data-validation='{"rules":["required", "minchars"],"messages":["Please fill this in", "This value must be at least 5 characters"], "params":[null,"5"]}'  />
+		</div>
+		<p>Inputs can have multiple rules, be carefull when entering params to match the indexes</p>
+
+		
+
+		<hr />
+
+
+
+		<h2 id="new_rule">Add a new rule</h2>
+		<pre>
+		var exampleNewValidation = function (eField, optionalParam) {
+			//perform validation
+			//return false if it fails
+			return true; //if it passes
+		};
+
+		var newSuccessCallback = function (eField) { };
+
+		/**
+		* Set a validation rule. rootObject name will be your namespace
+		* Name will be how it is referred to in the data-validation rules array (here NewValidation)
+		* Function is the function used to validate the data (here exampleNewValidation)
+		*/
+		looseValidation.addValidationFunction('NewValidation', exampleNewValidation);
+
+		/**
+		* Set a success function. rootObject name will be your namespace
+		* Name will be how it is referred to in the data-success array (here NewSuccess)
+		* Function is the function to call (here newSuccessCallback)
+		*/
+		looseValidation.addSuccessFunction('NewSuccess', newSuccessCallback);
+
+
+		/*** USAGE ***/
+		data-validation='{"rules":["NewValidation"],"messages":["Please fill this in"]}'
+		data-success='{"func":"NewSuccess"}'
+		</pre>
+
+  
+</form>
+
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js">\x3C/script>')</script>
+
+	<script src="js/looseValidation.js"></script>
+
+	<script>
+		$(document).ready(function() {
+				var formToValidate = $('.looseValidation');
+				looseValidation.init(formToValidate);
+			});
+		
+	</script>
+
+</body>
+</html>
