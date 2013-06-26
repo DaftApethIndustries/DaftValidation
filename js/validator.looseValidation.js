@@ -469,35 +469,18 @@
 		* Show error
 		*/
 		var showError = function (eField, stringMessageData) {
-			// check if the global message is visible and show if not
-			//if(eServerErrorBlock.css('display') === 'none'){ showErrorBlock(true); }
+			eField
+				.addClass(options.sValidationFailed)
+				.attr('aria-invalid', 'true');
 
-			//remove and success message before continuing
-			removeSuccess(eField);
-
-			// get the message from the field
-			// check to see if field error already present create text and append next to field
-
-			var eInsertionPoint = getMsgInsertionPoint(eField),
-				eErrorMessage = eInsertionPoint.siblings('p.error');
-			if (eErrorMessage.length === 0) {
-				var sErrorHTML = '<p class="error">' +  stringMessageData + '</p>';
-				eInsertionPoint.after(sErrorHTML).fadeIn();
-				eField.addClass(options.sValidationFailed).attr('aria-invalid', 'true');
-
-				if (eField[0].nodeName.toLowerCase() === 'select') {
-					eField.parent()
-						.addClass(options.sValidationFailed)
-						.attr('aria-invalid', 'true');
-				}
-				else {
-					eField.attr('aria-invalid', 'true');
-				}
-
+			if (eField[0].nodeName.toLowerCase() === 'select') {
+				eField.parent()
+					.addClass(options.sValidationFailed)
+					.attr('aria-invalid', 'true');
 			}
-			else if (eErrorMessage.text() !== stringMessageData) {
-				eErrorMessage.text(stringMessageData);
-			}
+
+			eField.trigger('validationFailed', stringMessageData);
+
 			return this; // to chain the function
 		};
 
@@ -505,53 +488,19 @@
 		* Hide error
 		*/
 		var hideError = function (eField) {
-			// remove fields error message
-			getMsgInsertionPoint(eField).siblings('p.error').remove();
-			eField.removeClass(options.sValidationFailed).attr('aria-invalid', 'false');
+			eField
+				.removeClass(options.sValidationFailed)
+				.attr('aria-invalid', 'false');
 
 			if (eField[0].nodeName.toLowerCase() === 'select') {
 				eField.parent()
 					.removeClass(options.sValidationFailed)
 					.attr('aria-invalid', 'false');
 			}
-			else {
-				eField.attr('aria-invalid', 'false');
-			}
 
-			/*var invalid = $(options.sValidationSelect).find('p.error').length;
-			if(invalid === 0 ){
-				showErrorBlock(false);
-			}*/
+			eField.trigger('validationPassed');
+
 			return this; // to chain the function
-		};
-
-		/**
-		* Get errorBlock element or create it if it does not exist
-		*/
-		var getErrorBlock = function () {
-			var eServerErrorBlock = $(options.sServerErrorBlockSelect);
-			//create if not found
-			if (eServerErrorBlock.length <= 0) {
-				eServerErrorBlock = $('<div class="' + options.sServerErrorBlockSelect + '" style="display:none" />');
-				//ARIA - http://www.w3.org/TR/wai-aria-practices/#LiveRegions
-				eServerErrorBlock.attr({'aria-live': 'polite', 'aria-atomic': 'false' });
-				$(options.sValidationSelect).prepend(eServerErrorBlock);
-			}
-
-			return eServerErrorBlock;
-		};
-
-		/**
-		* Show the errorBlock depending upon boolean
-		*/
-		var showErrorBlock = function (bShow) {
-			if (bShow === true) {
-				eServerErrorBlock.html('<p class="errorCloud">Ooops!</p><p class="errorText">Something&lsquo;s gone a little bit skew-whiff. Please check and try again.</p>').fadeIn();
-			}
-			else {
-				eServerErrorBlock.fadeOut().html();
-			}
-			return eServerErrorBlock;
 		};
 
 		/**
@@ -560,18 +509,17 @@
 		var addSuccess = function (eField) {
 			var sSuccessClass = options.sValidationPassedMessage,
 				sSuccessMessage = '',
-				sSuccessFunction = '';
-
-			//add class to item
-			eField.addClass(options.sValidationPassed);
+				sSuccessFunction = '',
+				sSuccessAttr, oSuccessData, oResponse;
 
 			// see if success message has been set
-			var sSuccessAttr = eField.attr(options.sSuccessAttr);
+			sSuccessAttr = eField.attr(options.sSuccessAttr);
+
 			if (sSuccessAttr === undefined) {
 				//success messages are not defined so halt here
 				return eField;
 			}
-			var oSuccessData = jQuery.parseJSON(sSuccessAttr.replace(/&#39;|'/g, '"'));
+			oSuccessData = jQuery.parseJSON(sSuccessAttr.replace(/&#39;|'/g, '"'));
 
 			//get either the message or function to call for the message
 			if (oSuccessData !== undefined) {
@@ -584,27 +532,22 @@
 			}
 			if (sSuccessFunction.length !== 0) {
 				//run function to set success message
-				var oResponse = successFunctions[sSuccessFunction](eField);
+				oResponse = successFunctions[sSuccessFunction](eField);
 				sSuccessClass = sSuccessClass + ' ' + oResponse['class'];
 				sSuccessMessage = oResponse.message;
 			}
 
 			if (sSuccessMessage.length !== 0) {
-				//get the current success message
-				var eInsertionPoint = getMsgInsertionPoint(eField);
-				var eValid = eInsertionPoint.siblings('.' + options.sValidationPassedMessage);
-				if (eValid.length === 0) {
-					eInsertionPoint.after('<p class="' + sSuccessClass + '">' + sSuccessMessage + '</p>').fadeIn();
-				}
-				//else if it was a function, always update
-				else if (sSuccessFunction.length !== 0) {
-					eValid.attr('class', sSuccessClass).html(sSuccessMessage);
-				}
+
+				eField.trigger('validationAddSuccess', {
+					"successClass" : sSuccessClass,
+					"successMessage" : sSuccessMessage
+				});
 			}
 
 			return eField;
 		};
-		
+
 		/**
 		* Remove the success message
 		*/
@@ -612,42 +555,9 @@
 			//remove class from item
 			eField.removeClass(options.sValidationPassed);
 
-			//remove related success messages
-			getMsgInsertionPoint(eField).siblings('.' + options.sValidationPassedMessage).remove();
-			return eField;
-		};
+			eField.trigger('validationRemoveSuccess');
 
-		/**
-		* Set the insertion point for error and status messages
-		* This is to cope with search fields as they have a container div
-		*/
-		var getMsgInsertionPoint = function (eField) {
-			var insertionPoint = eField.data('insertionPoint'),
-				eParent, lastElement;
-			if (insertionPoint !== undefined) {
-				return insertionPoint;
-			}
-			else {
-				eParent = eField.parent();
-				lastElement = eParent.find(':last-child');
-				if (eParent.hasClass('custom-select')) {
-					insertionPoint = eParent;
-				}
-				else if (eParent.hasClass('inline-button')) {
-					insertionPoint = lastElement;
-				}
-				else if (eField[0].type === 'checkbox') {
-					insertionPoint = eField.next();
-				}
-				else if (eField.hasClass('hasDatepicker')) {
-					insertionPoint = lastElement;
-				}
-				else {
-					insertionPoint = eField;//.parent('.controls').find('label');
-				}
-				eField.data('insertionPoint', insertionPoint);
-				return insertionPoint;
-			}
+			return eField;
 		};
 
 		/**
