@@ -17,7 +17,8 @@
 	_looseValidator.Reporter = function (eTarget, settings) {
 		var _this = this,
 			defaults = {
-				useErrorBlock : false
+				useErrorBlock : false,
+				errorMessageClass : 'error'
 			},
 			options = $.extend({}, defaults, settings),
 			eServerErrorBlock;
@@ -26,7 +27,8 @@
 		* Show error
 		*/
 		var showError = function (event, stringMessageData) {
-			var eField = $(event.target);
+			var eField = $(event.target),
+				eInsertionPoint, eErrorMessage, sErrorHTML;
 
 			// check if the global message is visible and show if not
 			//if(eServerErrorBlock.css('display') === 'none'){ showErrorBlock(true); }
@@ -39,11 +41,11 @@
 			// get the message from the field
 			// check to see if field error already present create text and append next to field
 
-			var eInsertionPoint = getMsgInsertionPoint(eField),
-				eErrorMessage = eInsertionPoint.siblings('p.error');
+			eInsertionPoint = getMsgInsertionPoint(eField);
+			eErrorMessage = eInsertionPoint.siblings('p.' + options.errorMessageClass);
 
 			if (eErrorMessage.length === 0) {
-				var sErrorHTML = '<p class="error">' +  stringMessageData + '</p>';
+				sErrorHTML = '<p class="' + options.errorMessageClass + '">' +  stringMessageData + '</p>';
 				eInsertionPoint.after(sErrorHTML).fadeIn();
 
 			}
@@ -60,9 +62,9 @@
 			var eField = $(event.target);
 
 			// remove fields error message
-			getMsgInsertionPoint(eField).siblings('p.error').remove();
+			getMsgInsertionPoint(eField).siblings('p.' + options.errorMessageClass).remove();
 
-			/*var invalid = $(options.sValidationSelect).find('p.error').length;
+			/*var invalid = $(options.sValidationSelect).find('p.' + options.errorMessageClass).length;
 			if(invalid === 0 ){
 				showErrorBlock(false);
 			}*/
