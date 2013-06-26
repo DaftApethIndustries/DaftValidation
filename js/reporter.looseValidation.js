@@ -32,7 +32,9 @@
 			//if(eServerErrorBlock.css('display') === 'none'){ showErrorBlock(true); }
 
 			//remove and success message before continuing
-			removeSuccess(event);
+			if (options.enableSuccessMessages === true) {
+				removeSuccess(event);
+			}
 
 			// get the message from the field
 			// check to see if field error already present create text and append next to field
@@ -103,6 +105,7 @@
 			var eField = $(event.target),
 				sSuccessClass = successData.successClass,
 				sSuccessMessage = successData.successMessage,
+				bAlwaysUpdate = successData.alwaysUpdate,
 				eInsertionPoint, eValid;
 
 			if (sSuccessMessage.length !== 0) {
@@ -113,7 +116,7 @@
 					eInsertionPoint.after('<p class="' + sSuccessClass + '">' + sSuccessMessage + '</p>').fadeIn();
 				}
 				//else if it was a function, always update
-				else if (sSuccessFunction.length !== 0) {
+				else if (bAlwaysUpdate === true) {
 					eValid.attr('class', sSuccessClass).html(sSuccessMessage);
 				}
 			}
@@ -149,9 +152,6 @@
 				if (eParent.hasClass('custom-select')) {
 					insertionPoint = eParent;
 				}
-				else if (eParent.hasClass('inline-button')) {
-					insertionPoint = lastElement;
-				}
 				else if (eField[0].type === 'checkbox') {
 					insertionPoint = eField.next();
 				}
@@ -174,8 +174,7 @@
 			eTarget
 				.on("validationFailed.looseValidation", showError)
 				.on("validationPassed.looseValidation", hideError)
-				.on("validationAddSuccess.looseValidation", addSuccess)
-				.on("validationRemoveSuccess.looseValidation", removeSuccess);
+				.on("validationAddSuccess.looseValidation", addSuccess);
 		};
 
 		/**

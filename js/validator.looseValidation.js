@@ -286,6 +286,7 @@
 		var _this = this,
 			defaults = {
 				autoInitReporter : true,
+				enableSuccessMessages : true,
 				sValidationSelect : '.looseValidation',
 				sValidationFailed : 'error',
 				sValidationPassed : 'valid',
@@ -298,7 +299,7 @@
 		/**
 		* Get data rules from the DOM and parse them
 		*/
-		var getDataRules = function (eField) {
+		var getValidationData = function (eField) {
 			// need to execute validation functions
 			var sValidationAttr = eField.attr(options.sValidationAttr);
 			if (sValidationAttr === undefined) {
@@ -307,6 +308,21 @@
 			}
 			return jQuery.parseJSON(sValidationAttr.replace(/&#39;|'/g, '"'));
 		};
+
+		/**
+		* Get success data from the DOM and parse them
+		*/
+		var getSuccessData = function (eField) {
+			// see if success message has been set
+			var sSuccessAttr = eField.attr(options.sSuccessAttr);
+
+			if (sSuccessAttr === undefined) {
+				//success messages are not defined so halt here
+				return undefined;
+			}
+			return jQuery.parseJSON(sSuccessAttr.replace(/&#39;|'/g, '"'));
+		};
+
 
 		/**
 		* Test if a rule exits
@@ -371,7 +387,7 @@
 				return true;
 			}
 
-			oDataRules = getDataRules(eField);
+			oDataRules = getValidationData(eField);
 
 			//validation does not exists therefore it's correct...
 			if (oDataRules === undefined) {
@@ -408,7 +424,8 @@
 						eField.removeClass(options.sValidationFailed);
 						hideError(eField);
 					}
-					if (eField.val() !== '') {
+					//add success state?
+					if (eField.val() !== '' && options.enableSuccessMessages === true) {
 						addSuccess(eField);
 					}
 					return true;
@@ -510,16 +527,10 @@
 			var sSuccessClass = options.sValidationPassedMessage,
 				sSuccessMessage = '',
 				sSuccessFunction = '',
+				bAlwaysUpdate = false,
 				sSuccessAttr, oSuccessData, oResponse;
 
-			// see if success message has been set
-			sSuccessAttr = eField.attr(options.sSuccessAttr);
-
-			if (sSuccessAttr === undefined) {
-				//success messages are not defined so halt here
-				return eField;
-			}
-			oSuccessData = jQuery.parseJSON(sSuccessAttr.replace(/&#39;|'/g, '"'));
+			oSuccessData = getSuccessData(eField);
 
 			//get either the message or function to call for the message
 			if (oSuccessData !== undefined) {
@@ -530,31 +541,22 @@
 					sSuccessFunction = oSuccessData.func;
 				}
 			}
+			//call any functions defined in success
 			if (sSuccessFunction.length !== 0) {
 				//run function to set success message
 				oResponse = successFunctions[sSuccessFunction](eField);
 				sSuccessClass = sSuccessClass + ' ' + oResponse['class'];
 				sSuccessMessage = oResponse.message;
+				bAlwaysUpdate = true;
 			}
 
 			if (sSuccessMessage.length !== 0) {
 				eField.trigger('validationAddSuccess.looseValidation', {
 					"successClass" : sSuccessClass,
-					"successMessage" : sSuccessMessage
+					"successMessage" : sSuccessMessage,
+					"alwaysUpdate" : bAlwaysUpdate
 				});
 			}
-
-			return eField;
-		};
-
-		/**
-		* Remove the success message
-		*/
-		var removeSuccess = function (eField) {
-			//remove class from item
-			eField.removeClass(options.sValidationPassed);
-
-			eField.trigger('validationRemoveSuccess.looseValidation');
 
 			return eField;
 		};
