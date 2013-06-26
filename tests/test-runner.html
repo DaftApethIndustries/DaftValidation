@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Title &amp; Meta -->
+    <title>Frontend tests</title>
+    <meta charset="utf-8">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="libs/mocha/mocha.css">
+</head>
+
+<body>
+
+    <div id="mocha"></div>
+
+    <!-- test form -->
+    <form novalidate="novalidate" action="#" class="looseValidation">
+        
+    </form>
+
+    <!-- Testing Libraries -->
+    <script src="libs/mocha/mocha.js"></script>
+    <script src="libs/chai/chai.js"></script>
+    <script src="libs/sinon/sinon.js"></script>
+    <script>
+        // Use the expect version of chai assertions - http://chaijs.com/api/bdd
+        var expect = chai.expect;
+
+        // Tell mocha we want TDD syntax
+        mocha.setup('tdd');
+    </script>
+
+    <!-- Libs -->
+    <script src="../js/jquery-1.8.3.min.js"></script>
+
+    <!-- Source files -->
+    <script src="../js/looseValidation.js"></script>
+
+    <!-- Test -->
+    <script src="models/looseValidation.test.js"></script>
+
+    <script>
+        mocha.run();
+    </script>
+
+</body>
+</html>
