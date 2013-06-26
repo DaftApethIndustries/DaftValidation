@@ -87,14 +87,14 @@
 			}
 			return true;
 		},
-		
+
 		/**
 		* Check that the field has a value
 		*/
 		required : function (eField) {
 			return validationRules.hasValue(eField);
 		},
-		
+
 		/**
 		* Required only if the partner field HAS a value
 		*/
@@ -128,7 +128,7 @@
 			var alphabetRegex = /^[A-Za-z]+$/;
 			return alphabetRegex.test(eField.val());
 		},
-		
+
 		/**
 		* Test that the value is numeric
 		*/
@@ -136,7 +136,7 @@
 			var numberRegex = /^[+\-]?\d+(\.\d+)?([eE][+\-]?\d+)?$/;
 			return numberRegex.test(eField.val());
 		},
-		
+
 		/**
 		* Test that the value matches a valid email
 		*/
@@ -147,7 +147,7 @@
 			}
 			return true;
 		},
-		
+
 		/**
 		* Validate password
 		*/
@@ -161,7 +161,7 @@
 					/[A-Z]+/, //includes upper case character
 					/[@!$£&*#%\^\?]+/ // includes a symbol
 				];
-				
+
 			var i = 0,
 				iLen = rules.length,
 				result;
@@ -178,7 +178,7 @@
 
 			return true;
 		},
-		
+
 		/**
 		* Test that the value matches a valid uk postcode
 		* Accepted formats: 1. LN NLL eg N1 1AA 2. LLN NLL eg SW4 0QL 3. LNN NLL eg M23 4PJ 4. LLNN NLL eg WS14 0JT 5. LLNL NLL eg SW1N 4TB 6. LNL NLL eg W1C 8LQ
@@ -187,7 +187,7 @@
 			var postcodeRegex = new RegExp('^[a-zA-Z]{1,2}[0-9][0-9A-Za-z]{0,1} {0,1}[0-9][A-Za-z]{2}$');
 			return postcodeRegex.test(eField.val());
 		},
-		
+
 		/**
 		* Check value of a field against a specific field
 		*/
@@ -198,7 +198,7 @@
 			}
 			return false;
 		},
-		
+
 		/**
 		* Check value has a minimum number of characters
 		**/
@@ -246,7 +246,7 @@
 			var val = eField.val(),
 				strength = 1,
 				rules = [/\S{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
-				
+
 			var i = 0,
 				iLen = rules.length;
 			//test against the rules
@@ -292,8 +292,22 @@
 				defaultErrorText : 'Whoops',
 				useErrorBlock : false
 			},
-			options = $.extend( {}, defaults, settings ),
+			options = $.extend({}, defaults, settings),
 			eServerErrorBlock;
+
+		/**
+		* Test if a rule exits
+		*/
+		this.hasRule = function (sRuleName) {
+			return validationRules[sRuleName] !== undefined;
+		};
+
+		/**
+		* Run a specific test
+		*/
+		this.useRule = function (sRuleName, eField, params) {
+			return validationRules[sRuleName](eField, params);
+		};
 
 		/**
 		* Validate a form
@@ -328,7 +342,7 @@
 			eForm.data('invalid', false);
 			return true;
 		};
-		
+
 		/**
 		* Validate a field
 		* Expects an $(input) field
@@ -354,18 +368,17 @@
 
 				//check each rule
 				while (index < iLen) {
-					var sRuleName = aRulesData[index];
-					var stringMessageData = oDataRules.messages[index];
-					
-					var params = false;
-					
+					var sRuleName = aRulesData[index],
+						stringMessageData = oDataRules.messages[index],
+						params = false;
+
 					// Set the params if defined
 					if (oDataRules.params && oDataRules.params[index]) {
 						params = oDataRules.params[index];
 					}
 
-					if (validationRules[sRuleName]) {
-						if (validationRules[sRuleName](eField, params) === false) {
+					if (this.hasRule(sRuleName)) {
+						if (this.useRule(sRuleName, eField, params) === false) {
 							showError(eField, stringMessageData);
 							bValid = false;
 							//As we've failed break out the look
@@ -442,15 +455,15 @@
 		var showError = function (eField, stringMessageData) {
 			// check if the global message is visible and show if not
 			//if(eServerErrorBlock.css('display') === 'none'){ showErrorBlock(true); }
-			
+
 			//remove and success message before continuing
 			removeSuccess(eField);
-							
+
 			// get the message from the field
 			// check to see if field error already present create text and append next to field
-			
-			var eInsertionPoint = getMsgInsertionPoint(eField);
-			var eErrorMessage = eInsertionPoint.siblings('p.error');
+
+			var eInsertionPoint = getMsgInsertionPoint(eField),
+				eErrorMessage = eInsertionPoint.siblings('p.error');
 			if (eErrorMessage.length === 0) {
 				var sErrorHTML = '<p class="error">' +  stringMessageData + '</p>';
 				eInsertionPoint.after(sErrorHTML).fadeIn();
@@ -466,7 +479,7 @@
 			}
 			return this; // to chain the function
 		};
-		
+
 		/**
 		* Hide error
 		*/
@@ -485,7 +498,7 @@
 			}*/
 			return this; // to chain the function
 		};
-		
+
 		/**
 		* Get errorBlock element or create it if it does not exist
 		*/
@@ -498,10 +511,10 @@
 				eServerErrorBlock.attr({'aria-live': 'polite', 'aria-atomic': 'false' });
 				$(options.sValidationSelect).prepend(eServerErrorBlock);
 			}
-			
+
 			return eServerErrorBlock;
 		};
-		
+
 		/**
 		* Show the errorBlock depending upon boolean
 		*/
@@ -514,9 +527,7 @@
 			}
 			return eServerErrorBlock;
 		};
-		
-		
-		
+
 		/**
 		* Add a success message
 		*/
@@ -527,7 +538,7 @@
 
 			//add class to item
 			eField.addClass(options.sValidationPassed);
-				
+
 			// see if success message has been set
 			var sSuccessAttr = eField.attr(options.sSuccessAttr);
 			if (sSuccessAttr === undefined) {
@@ -535,7 +546,7 @@
 				return eField;
 			}
 			var oSuccessData = jQuery.parseJSON(sSuccessAttr.replace(/&#39;|'/g, '"'));
-			
+
 			//get either the message or function to call for the message
 			if (oSuccessData !== undefined) {
 				if (oSuccessData.messages) {
@@ -551,7 +562,7 @@
 				sSuccessClass = sSuccessClass + ' ' + oResponse['class'];
 				sSuccessMessage = oResponse.message;
 			}
-			
+
 			if (sSuccessMessage.length !== 0) {
 				//get the current success message
 				var eInsertionPoint = getMsgInsertionPoint(eField);
@@ -564,7 +575,7 @@
 					eValid.attr('class', sSuccessClass).html(sSuccessMessage);
 				}
 			}
-			
+
 			return eField;
 		};
 		
@@ -579,19 +590,20 @@
 			getMsgInsertionPoint(eField).siblings('.' + options.sValidationPassedMessage).remove();
 			return eField;
 		};
-		
+
 		/**
 		* Set the insertion point for error and status messages
 		* This is to cope with search fields as they have a container div
 		*/
 		var getMsgInsertionPoint = function (eField) {
-			var insertionPoint = eField.data('insertionPoint');
+			var insertionPoint = eField.data('insertionPoint'),
+				eParent, lastElement;
 			if (insertionPoint !== undefined) {
 				return insertionPoint;
 			}
 			else {
-				var eParent = eField.parent();
-				var lastElement = eParent.find(':last-child');
+				eParent = eField.parent();
+				lastElement = eParent.find(':last-child');
 				if (eParent.hasClass('custom-select')) {
 					insertionPoint = eParent;
 				}
@@ -619,7 +631,7 @@
 
 			//bind event handlers to target
 			bind(eTarget);
-			
+
 		}());
 
 		return this;
@@ -628,20 +640,20 @@
 	/**
 	* Plugin binding
 	*/
-	$.fn.looseValidation = function ( method ) {
+	$.fn.looseValidation = function (method) {
 
 		// Method calling logic
 		// http://docs.jquery.com/Plugins/Authoring#Namespacing
 		if (methods[method]) {
-			return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
 		}
-		else if ( typeof method === 'object' || ! method ) {
-			return methods.init.apply( this, arguments );
+		else if (typeof method === 'object' || ! method) {
+			return methods.init.apply(this, arguments);
 		}
 		else {
-			$.error( 'Method ' +  method + ' does not exist on jQuery.looseValidation' );
+			$.error('Method ' +  method + ' does not exist on jQuery.looseValidation');
 		}
-		
+
 	};
 
 }(jQuery));
