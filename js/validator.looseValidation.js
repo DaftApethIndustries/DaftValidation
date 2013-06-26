@@ -8,6 +8,9 @@
 (function ($, undefined) {
 	"use strict";
 
+	//Main/Root object
+	var _looseValidator = window._looseValidator || {};
+
 	/**
 	* Methods accessible through $('form').looseValidation();
 	*/
@@ -282,18 +285,15 @@
 	var Validator = function (eTarget, settings) {
 		var _this = this,
 			defaults = {
+				autoInitReporter : true,
 				sValidationSelect : '.looseValidation',
 				sValidationFailed : 'error',
 				sValidationPassed : 'valid',
 				sValidationPassedMessage : 'successMessage',
 				sValidationAttr : 'data-validation',
-				sSuccessAttr : 'data-success',
-				sServerErrorBlockSelect : '.errorBlock',
-				defaultErrorText : 'Whoops',
-				useErrorBlock : false
+				sSuccessAttr : 'data-success'
 			},
-			options = $.extend({}, defaults, settings),
-			eServerErrorBlock;
+			options = $.extend({}, defaults, settings);
 
 		/**
 		* Get data rules from the DOM and parse them
@@ -479,7 +479,7 @@
 					.attr('aria-invalid', 'true');
 			}
 
-			eField.trigger('validationFailed', stringMessageData);
+			eField.trigger('validationFailed.looseValidation', stringMessageData);
 
 			return this; // to chain the function
 		};
@@ -498,7 +498,7 @@
 					.attr('aria-invalid', 'false');
 			}
 
-			eField.trigger('validationPassed');
+			eField.trigger('validationPassed.looseValidation');
 
 			return this; // to chain the function
 		};
@@ -538,8 +538,7 @@
 			}
 
 			if (sSuccessMessage.length !== 0) {
-
-				eField.trigger('validationAddSuccess', {
+				eField.trigger('validationAddSuccess.looseValidation', {
 					"successClass" : sSuccessClass,
 					"successMessage" : sSuccessMessage
 				});
@@ -555,7 +554,7 @@
 			//remove class from item
 			eField.removeClass(options.sValidationPassed);
 
-			eField.trigger('validationRemoveSuccess');
+			eField.trigger('validationRemoveSuccess.looseValidation');
 
 			return eField;
 		};
@@ -567,6 +566,10 @@
 
 			//bind event handlers to target
 			bind(eTarget);
+
+			if (options.autoInitReporter === true && _looseValidator.Reporter !== undefined) {
+				var reporterInstance = new _looseValidator.Reporter(eTarget, options);
+			}
 
 		}());
 
@@ -591,5 +594,7 @@
 		}
 
 	};
+
+	window._looseValidator = _looseValidator;
 
 }(jQuery));

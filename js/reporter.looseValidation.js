@@ -1,6 +1,6 @@
 /*jslint evil: false, jquery:true, forin: true, white: false, devel:true */
 /*!
- * LooseValidation plugin
+ * LooseValidation reporter
  * Author: ryanand26 (2013) (http://www.looseideas.co.uk)
  * @version 0.4
 **/
@@ -8,19 +8,31 @@
 (function ($, undefined) {
 	"use strict";
 
+	//Main/Root object
+	var _looseValidator = window._looseValidator || {};
+
 	/**
 	* Validation reporter object
 	*/
-	var Reporter = function (eTarget, settings) {
+	_looseValidator.Reporter = function (eTarget, settings) {
+		var _this = this,
+			defaults = {
+				useErrorBlock : false
+			},
+			options = $.extend({}, defaults, settings),
+			eServerErrorBlock;
+
 		/**
 		* Show error
 		*/
-		var showError = function (eField, stringMessageData) {
+		var showError = function (event, stringMessageData) {
+			var eField = $(event.target);
+
 			// check if the global message is visible and show if not
 			//if(eServerErrorBlock.css('display') === 'none'){ showErrorBlock(true); }
 
 			//remove and success message before continuing
-			removeSuccess(eField);
+			removeSuccess(event);
 
 			// get the message from the field
 			// check to see if field error already present create text and append next to field
@@ -42,7 +54,9 @@
 		/**
 		* Hide error
 		*/
-		var hideError = function (eField) {
+		var hideError = function (event) {
+			var eField = $(event.target);
+
 			// remove fields error message
 			getMsgInsertionPoint(eField).siblings('p.error').remove();
 
@@ -85,13 +99,16 @@
 		/**
 		* Add a success message
 		*/
-		var addSuccess = function (eField) {
-			var sSuccessMessage = '';
+		var addSuccess = function (event, successData) {
+			var eField = $(event.target),
+				sSuccessClass = successData.successClass,
+				sSuccessMessage = successData.successMessage,
+				eInsertionPoint, eValid;
 
 			if (sSuccessMessage.length !== 0) {
 				//get the current success message
-				var eInsertionPoint = getMsgInsertionPoint(eField);
-				var eValid = eInsertionPoint.siblings('.' + options.sValidationPassedMessage);
+				eInsertionPoint = getMsgInsertionPoint(eField);
+				eValid = eInsertionPoint.siblings('.' + options.sValidationPassedMessage);
 				if (eValid.length === 0) {
 					eInsertionPoint.after('<p class="' + sSuccessClass + '">' + sSuccessMessage + '</p>').fadeIn();
 				}
@@ -107,9 +124,8 @@
 		/**
 		* Remove the success message
 		*/
-		var removeSuccess = function (eField) {
-			//remove class from item
-			//eField.removeClass(options.sValidationPassed);
+		var removeSuccess = function (event) {
+			var eField = $(event.target);
 
 			//remove related success messages
 			getMsgInsertionPoint(eField).siblings('.' + options.sValidationPassedMessage).remove();
@@ -123,6 +139,7 @@
 		var getMsgInsertionPoint = function (eField) {
 			var insertionPoint = eField.data('insertionPoint'),
 				eParent, lastElement;
+
 			if (insertionPoint !== undefined) {
 				return insertionPoint;
 			}
@@ -150,16 +167,30 @@
 		};
 
 		/**
+		* Bind the events on the form
+		*/
+		var bind = function (eTarget) {
+			//validate any input that has been actioned
+			eTarget
+				.on("validationFailed.looseValidation", showError)
+				.on("validationPassed.looseValidation", hideError)
+				.on("validationAddSuccess.looseValidation", addSuccess)
+				.on("validationRemoveSuccess.looseValidation", removeSuccess);
+		};
+
+		/**
 		* Init, self executing.
 		*/
 		var init = (function () {
 
 			//bind event handlers to target
-			//bind(eTarget);
+			bind(eTarget);
 
 		}());
 
 		return this;
 	};
+
+	window._looseValidator = _looseValidator;
 
 }(jQuery));
