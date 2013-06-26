@@ -57,48 +57,48 @@ suite('Validator Test Functions', function() {
         this.form = null;
     });
 
-    test("Required: Textfield: empty textfield fails", function() {
+    test("Required: Textfield", function() {
+        //empty textfield fails
         this.textfield.val('');
         expect(this.validator.useRule('required', this.textfield)).to.be.false;
-    });
-    test("Required: Textfield: filled textfield passes", function() {
+
+        //filled textfield passes
         this.textfield.val('this is a value');
         expect(this.validator.useRule('required', this.textfield)).to.be.true;
-    });
-    test("Required: Textfield: textfield with spaces only passes", function() {
+
+        //textfield with spaces only passes
         this.textfield.val('   ');
         expect(this.validator.useRule('required', this.textfield)).to.be.true;
     });
 
-    test("Required: Select: first index fails", function() {
+    test("Required: Select", function() {
+        //Required: Select: first index fails
         this.select[0].selectedIndex = 0;
         expect(this.validator.useRule('required', this.select)).to.be.false;
-    });
-    test("Required: Select: second index passes", function() {
+
+        //second index passes
         this.select[0].selectedIndex = 1;
         expect(this.validator.useRule('required', this.select)).to.be.true;
     });
 
-    test("Required: Checkbox: unchecked fails", function() {
+    test("Required: Checkbox", function() {
         this.checkbox[0].checked = false;
         expect(this.validator.useRule('required', this.checkbox)).to.be.false;
-    });
-    test("Required: Checkbox: checked passes", function() {
+
         this.checkbox[0].checked = true;
         expect(this.validator.useRule('required', this.checkbox)).to.be.true;
     });
 
-    test("Required: Textarea: unfilled textarea passes", function() {
+    test("Required: Textarea", function() {
         this.textarea[0].value = '';
         expect(this.validator.useRule('required', this.textarea)).to.be.false;
-    });
-    test("Required: Textarea: filled textarea passes", function() {
+
         this.textarea[0].value = 'this is a value';
         expect(this.validator.useRule('required', this.textarea)).to.be.true;
-    });
-    test("Required: Textarea: with spaces only fails", function() {
+
         this.textarea[0].value = '      ';
         expect(this.validator.useRule('required', this.textarea)).to.be.false;
     });
+
 
 });
