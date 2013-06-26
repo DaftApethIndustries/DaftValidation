@@ -1,8 +1,8 @@
 /*jslint evil: false, jquery:true, forin: true, white: false, devel:true */
 /*!
  * LooseValidation plugin
- * Author: ryanand26 (2012) (http://www.looseideas.co.uk)
- * @version 1.0
+ * Author: ryanand26 (2013) (http://www.looseideas.co.uk)
+ * @version 0.4
 **/
 
 (function ($, undefined) {
@@ -296,6 +296,19 @@
 			eServerErrorBlock;
 
 		/**
+		* Get data rules from the DOM and parse them
+		*/
+		var getDataRules = function (eField) {
+			// need to execute validation functions
+			var sValidationAttr = eField.attr(options.sValidationAttr);
+			if (sValidationAttr === undefined) {
+				//validation does not exists therefore it's correct...
+				return undefined;
+			}
+			return jQuery.parseJSON(sValidationAttr.replace(/&#39;|'/g, '"'));
+		};
+
+		/**
 		* Test if a rule exits
 		*/
 		this.hasRule = function (sRuleName) {
@@ -348,29 +361,31 @@
 		* Expects an $(input) field
 		*/
 		this.validateField = function (eField) {
+			var oDataRules, aRulesData,
+				bValid = true,
+				index = 0,
+				iLen, sRuleName, stringMessageData, params;
+
 			//test if the field is disabled
 			if (eField[0].disabled === true) {
 				return true;
 			}
 
-			// need to execute validation functions
-			var sValidationAttr = eField.attr(options.sValidationAttr);
-			if (sValidationAttr === undefined) {
-				//validation does not exists therefore it's correct...
+			oDataRules = getDataRules(eField);
+
+			//validation does not exists therefore it's correct...
+			if (oDataRules === undefined) {
 				return true;
 			}
-			var oDataRules = jQuery.parseJSON(sValidationAttr.replace(/&#39;|'/g, '"'));
-			if (oDataRules && oDataRules.rules) {
-				var aRulesData = oDataRules.rules,
-					bValid = true,
-					index = 0,
-					iLen = aRulesData.length;
+			else if (oDataRules && oDataRules.rules) {
+				aRulesData = oDataRules.rules;
+				iLen = aRulesData.length;
 
-				//check each rule
+				//check each rule to create a list of all errors
 				while (index < iLen) {
-					var sRuleName = aRulesData[index],
-						stringMessageData = oDataRules.messages[index],
-						params = false;
+					sRuleName = aRulesData[index];
+					stringMessageData = oDataRules.messages[index];
+					params = false;
 
 					// Set the params if defined
 					if (oDataRules.params && oDataRules.params[index]) {
@@ -387,6 +402,7 @@
 					}
 					index++;
 				}
+				//once all rules checked
 				if (bValid === true) {
 					if (eField.hasClass(options.sValidationFailed)) {
 						eField.removeClass(options.sValidationFailed);
@@ -470,7 +486,12 @@
 				eField.addClass(options.sValidationFailed).attr('aria-invalid', 'true');
 
 				if (eField[0].nodeName.toLowerCase() === 'select') {
-					eField.parent().addClass(options.sValidationFailed);
+					eField.parent()
+						.addClass(options.sValidationFailed)
+						.attr('aria-invalid', 'true');
+				}
+				else {
+					eField.attr('aria-invalid', 'true');
 				}
 
 			}
@@ -489,7 +510,12 @@
 			eField.removeClass(options.sValidationFailed).attr('aria-invalid', 'false');
 
 			if (eField[0].nodeName.toLowerCase() === 'select') {
-				eField.parent().removeClass(options.sValidationFailed);
+				eField.parent()
+					.removeClass(options.sValidationFailed)
+					.attr('aria-invalid', 'false');
+			}
+			else {
+				eField.attr('aria-invalid', 'false');
 			}
 
 			/*var invalid = $(options.sValidationSelect).find('p.error').length;
