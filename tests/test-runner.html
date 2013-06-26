@@ -16,30 +16,51 @@
     <!-- test form -->
     <br /><br />
     <fieldset>
-        <legend>Fields</legend>
-        <form novalidate="novalidate" action="#" class="looseValidation">
-            <p></p>
+        <legend>Basic form fields</legend>
+
+        <form action="#" class="ruleTests">
             <div class="example">
-                <label for="required">Required Textfield</label>
-                <input id="required" type="text" />
+                <label for="required-a">Required Textfield</label>
+                <input id="required-a" type="text" />
             </div>
 
             <div class="example">
-                <label for="required-select">Required Select</label>
-                <select id="required-select" type="text">
+                <label for="required-select-a">Required Select</label>
+                <select id="required-select-a" type="text">
                     <option>Select an option</option>
                     <option value="selected">Selected</option>
                 </select>
             </div>
 
             <div class="example">
-                <label for="required-checkbox">Required Checkbox</label>
-                <input id="required-checkbox" type="checkbox" />
+                <label for="required-checkbox-a">Required Checkbox</label>
+                <input id="required-checkbox-a" type="checkbox" />
             </div>
 
             <div class="example">
-                <label for="required-textarea">Required Checkbox</label>
-                <textarea id="required-textarea"></textarea>
+                <label for="required-textarea-a">Required Checkbox</label>
+                <textarea id="required-textarea-a"></textarea>
+            </div>
+
+        </form>
+    </fieldset>
+    <br /><br />
+    <fieldset>
+        <legend>looseValidation form fields</legend>
+
+        <form action="#" class="looseValidation">
+            <div class="example">
+                <label for="required">Required</label>
+                <input id="required" type="text" 
+                    data-validation='{"rules":["required"],"messages":["Please fill this in"]}' data-success='{ "messages" : "Success" }' />
+            </div>
+
+            <div class="example">
+                <label for="required-select">Required Select</label>
+                <select id="required-select" type="text" data-validation='{"rules":["required"],"messages":["Please fill this in"]}'>
+                    <option>Select an option</option>
+                    <option value="selected">Selected</option>
+                </select>
             </div>
 
         </form>
