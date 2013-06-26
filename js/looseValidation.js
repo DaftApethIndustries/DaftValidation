@@ -16,9 +16,13 @@
 			//loop thorugh each passed element
 			this.each(function () {
 				var el = $(this),
-					validatorInstance = new Validator(el, settings);
+					validatorInstance;
 
-				el.data('validator', validatorInstance);
+				//test for existing validators
+				if (el.data('validator') === undefined) {
+					validatorInstance = new Validator(el, settings);
+					el.data('validator', validatorInstance);
+				}
 
 				return this;
 			});
