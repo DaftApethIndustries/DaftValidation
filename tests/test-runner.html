@@ -14,9 +14,36 @@
     <div id="mocha"></div>
 
     <!-- test form -->
-    <form novalidate="novalidate" action="#" class="looseValidation">
-        
-    </form>
+    <br /><br />
+    <fieldset>
+        <legend>Fields</legend>
+        <form novalidate="novalidate" action="#" class="looseValidation">
+            <p></p>
+            <div class="example">
+                <label for="required">Required Textfield</label>
+                <input id="required" type="text" />
+            </div>
+
+            <div class="example">
+                <label for="required-select">Required Select</label>
+                <select id="required-select" type="text">
+                    <option>Select an option</option>
+                    <option value="selected">Selected</option>
+                </select>
+            </div>
+
+            <div class="example">
+                <label for="required-checkbox">Required Checkbox</label>
+                <input id="required-checkbox" type="checkbox" />
+            </div>
+
+            <div class="example">
+                <label for="required-textarea">Required Checkbox</label>
+                <textarea id="required-textarea"></textarea>
+            </div>
+
+        </form>
+    </fieldset>
 
     <!-- Testing Libraries -->
     <script src="libs/mocha/mocha.js"></script>
