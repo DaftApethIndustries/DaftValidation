@@ -104,7 +104,7 @@ suite('Validator Test Functions', function() {
 /**
 * Test the rule effects through the UI
 */
-suite('Validator Binding', function() {
+suite('Validator Input Binding', function() {
 
     setup(function() {
         this.formSelect = '.looseValidation';
@@ -116,10 +116,9 @@ suite('Validator Binding', function() {
     });
 
     teardown(function() {
+        //put into invalid state
         this.textfield.val('');
         this.select[0].selectedIndex = 0;
-        this.checkbox[0].checked = false;
-        this.textarea[0].value = '';
 
         this.validator = null;
         this.form = null;
@@ -180,6 +179,54 @@ suite('Validator Binding', function() {
         this.select.trigger('change');
 
         expect(this.select.attr('aria-invalid')).to.equal('false');
+    });
+
+});
+
+/**
+* Test the rule effects through the UI
+*/
+suite('Validator Form Binding', function() {
+
+    setup(function() {
+        this.formSelect = '.looseValidation';
+        this.form = $(this.formSelect).looseValidation();
+        this.textfield = $('#required');
+        this.select = $('#required-select');
+
+        this.validator = this.form.data('validator');
+    });
+
+    teardown(function() {
+
+        this.validator = null;
+        this.form = null;
+    });
+
+    test("validateForm : Submit while invalid", function() {
+        //form should start in invalid state
+        this.form.trigger('submit');
+
+        expect(this.form.data('invalid')).to.equal(true);
+    });
+
+    test("validateForm : Submit while partly invalid", function() {
+        //change to a valid value
+        this.textfield.val('i am a value').trigger('blur');
+
+        this.form.trigger('submit');
+
+        expect(this.form.data('invalid')).to.equal(true);
+    });
+
+    test("validateForm : Submit while valid", function() {
+        //change to a valid value
+        this.select[0].selectedIndex = 1;
+
+        //form should start in invalid state
+        this.form.trigger('submit');
+
+        expect(this.form.data('invalid')).to.equal(false);
     });
 
 });
