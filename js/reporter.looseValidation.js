@@ -22,13 +22,18 @@
 	* Validation reporter object
 	*/
 	var Reporter = function (eTarget, settings) {
-		this.options = $.extend({}, defaults, settings);
+		if (eTarget) {
+			//bind event handlers to target
+			this.bind(eTarget);
+		}
+		if (settings) {
+			this.options = $.extend({}, defaults, settings);
+		}
 
-		//bind event handlers to target
-		this.bind(eTarget);
+		return this;
 	};
 
-	
+
 	Reporter.prototype = {
 		/**
 		* Set the insertion point for error and status messages
@@ -113,36 +118,6 @@
 		},
 
 		/**
-		* Get errorBlock element or create it if it does not exist
-		*/
-		getErrorBlock : function () {
-			var options = this.options,
-				eServerErrorBlock = $(options.sServerErrorBlockSelect);
-			//create if not found
-			if (eServerErrorBlock.length <= 0) {
-				eServerErrorBlock = $('<div class="' + options.sServerErrorBlockSelect + '" style="display:none" />');
-				//ARIA - http://www.w3.org/TR/wai-aria-practices/#LiveRegions
-				eServerErrorBlock.attr({'aria-live': 'polite', 'aria-atomic': 'false' });
-				$(options.sValidationSelect).prepend(eServerErrorBlock);
-			}
-
-			return eServerErrorBlock;
-		},
-
-		/**
-		* Show the errorBlock depending upon boolean
-		*/
-		showErrorBlock : function (bShow) {
-			if (bShow === true) {
-				eServerErrorBlock.html('<p class="errorCloud">Ooops!</p><p class="errorText">Something&lsquo;s gone a little bit skew-whiff. Please check and try again.</p>').fadeIn();
-			}
-			else {
-				eServerErrorBlock.fadeOut().html();
-			}
-			return eServerErrorBlock;
-		},
-
-		/**
 		* Add a success message
 		*/
 		addSuccess : function (event, successData) {
@@ -189,7 +164,7 @@
 		* Bind the events on the form
 		*/
 		bind : function (eTarget) {
-			//validate any input that has been actioned
+			//watch for events
 			eTarget
 				.on("validationFailed.looseValidation", $.proxy(this.showError, this))
 				.on("validationPassed.looseValidation", $.proxy(this.hideError, this))
@@ -200,7 +175,7 @@
 		* Bind the events on the form
 		*/
 		unbind : function (eTarget) {
-			//validate any input that has been actioned
+			//stop watching for events
 			eTarget
 				.off("validationFailed.looseValidation", $.proxy(this.showError, this))
 				.off("validationPassed.looseValidation", $.proxy(this.hideError, this))
@@ -209,10 +184,57 @@
 
 	};
 
+
+	/**
+	* Validation reporter object
+	* (Functional inheritance)
+	*/
+	var ReporterBlock = function (eTarget, settings) {
+		var options = $.extend({}, defaults, settings);
+
+		return Reporter.call(this, eTarget, options);
+	};
+	ReporterBlock.prototype = new Reporter();
+
+	/**
+	* Get errorBlock element or create it if it does not exist
+	*/
+	ReporterBlock.prototype.getErrorBlock = function () {
+		var options = this.options,
+			eServerErrorBlock = $(options.sServerErrorBlockSelect);
+
+		//create if not found
+		if (eServerErrorBlock.length === 0) {
+			eServerErrorBlock = $('<div class="' + options.sServerErrorBlockSelect + '" style="display:none" />');
+			//ARIA - http://www.w3.org/TR/wai-aria-practices/#LiveRegions
+			eServerErrorBlock.attr({'aria-live': 'polite', 'aria-atomic': 'false' });
+			$(options.sValidationSelect).prepend(eServerErrorBlock);
+		}
+
+		return eServerErrorBlock;
+	};
+
+	/**
+	* Show the errorBlock depending upon boolean
+	*/
+	ReporterBlock.prototype.showErrorBlock = function (bShow) {
+		var errorBlockHTML = '<p class="errorCloud">Ooops!</p><p class="errorText">Something&lsquo;s gone a little bit skew-whiff. Please check and try again.</p>';
+		if (bShow === true) {
+			eServerErrorBlock.html().fadeIn();
+		}
+		else {
+			eServerErrorBlock.fadeOut().html();
+		}
+		return eServerErrorBlock;
+	};
+
+
+
 	/**
 	* Validation reporter object
 	*/
 	_looseValidator.Reporter = Reporter;
+	_looseValidator.ReporterBlock = ReporterBlock;
 
 	window._looseValidator = _looseValidator;
 

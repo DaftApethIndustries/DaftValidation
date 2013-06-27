@@ -577,6 +577,7 @@
 
 			if (options.autoInitReporter === true && _looseValidator.Reporter !== undefined) {
 				var reporterInstance = new _looseValidator.Reporter(eTarget, options);
+				//var reporterInstance = new _looseValidator.ReporterBlock(eTarget, options);
 			}
 
 		}());
