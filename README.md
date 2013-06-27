@@ -52,9 +52,10 @@ The biggest issue with this approach is that the attribute must be valid JSON. Q
 See index.html for examples of usage.
 
 ## Plugin Options:
-
+	+ autoInitReporter: (defaults to true) Initialize the reporter object as part of the validator init
+	+ enableSuccessMessages: (defaults to true) Fire events for success messages
 	+ sValidationFailed: (defaults to 'error') The class added to the field and message when it's in an error state.
-	+ sValidationPassed: (defaults to 'valid') The class added to the field when it's in success state.
 	+ sValidationPassedMessage: (defaults to 'successMessage') The class added to the success message.
 	+ sValidationAttr: (defaults to (defaults to 'data-validation') Attribute used for validation settings.
 	+ sSuccessAttr: (defaults to 'data-success') Attribute used for success settings.
+	+ jsonReplaceRegex : (defaults to  /&#39;|'/g) Regex replace characters in the JSON string with double quote

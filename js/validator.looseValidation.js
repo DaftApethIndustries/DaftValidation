@@ -285,14 +285,20 @@
 	var Validator = function (eTarget, settings) {
 		var _this = this,
 			defaults = {
+				//initialize the reporter object as part of the validator init
 				autoInitReporter : true,
+				//fire events for success messages
 				enableSuccessMessages : true,
-				sValidationSelect : '.looseValidation',
+				//class added to track error state of a field
 				sValidationFailed : 'error',
-				sValidationPassed : 'valid',
+				//default class for success message
 				sValidationPassedMessage : 'successMessage',
+				//attribute that holds the validation data
 				sValidationAttr : 'data-validation',
-				sSuccessAttr : 'data-success'
+				//attribute that holds the success data
+				sSuccessAttr : 'data-success',
+				//regex replace characters in the JSON string with double quote
+				jsonReplaceRegex : /&#39;|'/g
 			},
 			options = $.extend({}, defaults, settings);
 
@@ -306,7 +312,7 @@
 				//validation does not exists therefore it's correct...
 				return undefined;
 			}
-			return jQuery.parseJSON(sValidationAttr.replace(/&#39;|'/g, '"'));
+			return jQuery.parseJSON(sValidationAttr.replace(options.jsonReplaceRegex, '"'));
 		};
 
 		/**
@@ -320,7 +326,7 @@
 				//success messages are not defined so halt here
 				return undefined;
 			}
-			return jQuery.parseJSON(sSuccessAttr.replace(/&#39;|'/g, '"'));
+			return jQuery.parseJSON(sSuccessAttr.replace(options.jsonReplaceRegex, '"'));
 		};
 
 
@@ -528,7 +534,7 @@
 				sSuccessMessage = '',
 				sSuccessFunction = '',
 				bAlwaysUpdate = false,
-				sSuccessAttr, oSuccessData, oResponse;
+				oSuccessData, oResponse;
 
 			oSuccessData = getSuccessData(eField);
 
