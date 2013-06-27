@@ -11,25 +11,30 @@
 	//Main/Root object
 	var _looseValidator = window._looseValidator || {};
 
+	var defaults = {
+		useErrorBlock : false,
+		errorMessageClass : 'error',
+		errorTemplate : '<p class="<%class%>"><%message%></p>',
+		successTemplate : '<p class="<%class%>"><%message%></p>'
+	};
+
 	/**
 	* Validation reporter object
 	*/
-	_looseValidator.Reporter = function (eTarget, settings) {
-		var _this = this,
-			defaults = {
-				useErrorBlock : false,
-				errorMessageClass : 'error',
-				errorTemplate : '<p class="<%class%>"><%message%></p>',
-				successTemplate : '<p class="<%class%>"><%message%></p>'
-			},
-			options = $.extend({}, defaults, settings),
-			eServerErrorBlock;
+	var Reporter = function (eTarget, settings) {
+		this.options = $.extend({}, defaults, settings);
 
+		//bind event handlers to target
+		this.bind(eTarget);
+	};
+
+	
+	Reporter.prototype = {
 		/**
 		* Set the insertion point for error and status messages
 		* This is to cope with search fields as they have a container div
 		*/
-		_this.getMsgInsertionPoint = function (eField) {
+		getMsgInsertionPoint : function (eField) {
 			var insertionPoint = eField.data('insertionPoint'),
 				eParent, lastElement;
 
@@ -54,13 +59,14 @@
 				eField.data('insertionPoint', insertionPoint);
 				return insertionPoint;
 			}
-		};
+		},
 
 		/**
 		* Show error
 		*/
-		_this.showError = function (event, stringMessageData) {
+		showError : function (event, stringMessageData) {
 			var eField = $(event.target),
+				options = this.options,
 				eInsertionPoint, eErrorMessage,
 				sErrorHTML = options.errorTemplate;
 
@@ -69,13 +75,13 @@
 
 			//remove and success message before continuing
 			if (options.enableSuccessMessages === true) {
-				_this.removeSuccess(event);
+				this.removeSuccess(event);
 			}
 
 			// get the message from the field
 			// check to see if field error already present create text and append next to field
 
-			eInsertionPoint = _this.getMsgInsertionPoint(eField);
+			eInsertionPoint = this.getMsgInsertionPoint(eField);
 			eErrorMessage = eInsertionPoint.siblings('p.' + options.errorMessageClass);
 
 			if (eErrorMessage.length === 0) {
@@ -88,29 +94,30 @@
 				eErrorMessage.text(stringMessageData);
 			}
 			return this; // to chain the function
-		};
+		},
 
 		/**
 		* Hide error
 		*/
-		_this.hideError = function (event) {
+		hideError : function (event) {
 			var eField = $(event.target);
 
 			// remove fields error message
-			_this.getMsgInsertionPoint(eField).siblings('p.' + options.errorMessageClass).remove();
+			this.getMsgInsertionPoint(eField).siblings('p.' + this.options.errorMessageClass).remove();
 
-			/*var invalid = $(options.sValidationSelect).find('p.' + options.errorMessageClass).length;
+			/*var invalid = $(this.options.sValidationSelect).find('p.' + this.options.errorMessageClass).length;
 			if(invalid === 0 ){
-				_this.showErrorBlock(false);
+				this.showErrorBlock(false);
 			}*/
 			return this; // to chain the function
-		};
+		},
 
 		/**
 		* Get errorBlock element or create it if it does not exist
 		*/
-		_this.getErrorBlock = function () {
-			var eServerErrorBlock = $(options.sServerErrorBlockSelect);
+		getErrorBlock : function () {
+			var options = this.options,
+				eServerErrorBlock = $(options.sServerErrorBlockSelect);
 			//create if not found
 			if (eServerErrorBlock.length <= 0) {
 				eServerErrorBlock = $('<div class="' + options.sServerErrorBlockSelect + '" style="display:none" />');
@@ -120,12 +127,12 @@
 			}
 
 			return eServerErrorBlock;
-		};
+		},
 
 		/**
 		* Show the errorBlock depending upon boolean
 		*/
-		_this.showErrorBlock = function (bShow) {
+		showErrorBlock : function (bShow) {
 			if (bShow === true) {
 				eServerErrorBlock.html('<p class="errorCloud">Ooops!</p><p class="errorText">Something&lsquo;s gone a little bit skew-whiff. Please check and try again.</p>').fadeIn();
 			}
@@ -133,13 +140,14 @@
 				eServerErrorBlock.fadeOut().html();
 			}
 			return eServerErrorBlock;
-		};
+		},
 
 		/**
 		* Add a success message
 		*/
-		_this.addSuccess = function (event, successData) {
+		addSuccess : function (event, successData) {
 			var eField = $(event.target),
+				options = this.options,
 				sSuccessClass = successData.successClass,
 				sSuccessMessage = successData.successMessage,
 				bAlwaysUpdate = successData.alwaysUpdate,
@@ -148,7 +156,7 @@
 
 			if (sSuccessMessage.length !== 0) {
 				//get the current success message
-				eInsertionPoint = _this.getMsgInsertionPoint(eField);
+				eInsertionPoint = this.getMsgInsertionPoint(eField);
 				eValid = eInsertionPoint.siblings('.' + options.sValidationPassedMessage);
 				if (eValid.length === 0) {
 					eInsertionPoint
@@ -164,53 +172,47 @@
 			}
 
 			return eField;
-		};
+		},
 
 		/**
 		* Remove the success message
 		*/
-		_this.removeSuccess = function (event) {
+		removeSuccess : function (event) {
 			var eField = $(event.target);
 
 			//remove related success messages
-			_this.getMsgInsertionPoint(eField).siblings('.' + options.sValidationPassedMessage).remove();
+			this.getMsgInsertionPoint(eField).siblings('.' + this.options.sValidationPassedMessage).remove();
 			return eField;
-		};
+		},
 
 		/**
 		* Bind the events on the form
 		*/
-		_this.bind = function (eTarget) {
+		bind : function (eTarget) {
 			//validate any input that has been actioned
 			eTarget
-				.on("validationFailed.looseValidation", _this.showError)
-				.on("validationPassed.looseValidation", _this.hideError)
-				.on("validationAddSuccess.looseValidation", _this.addSuccess);
-		};
+				.on("validationFailed.looseValidation", $.proxy(this.showError, this))
+				.on("validationPassed.looseValidation", $.proxy(this.hideError, this))
+				.on("validationAddSuccess.looseValidation", $.proxy(this.addSuccess, this));
+		},
 
 		/**
 		* Bind the events on the form
 		*/
-		_this.unbind = function (eTarget) {
+		unbind : function (eTarget) {
 			//validate any input that has been actioned
 			eTarget
-				.off("validationFailed.looseValidation", _this.showError)
-				.off("validationPassed.looseValidation", _this.hideError)
-				.off("validationAddSuccess.looseValidation", _this.addSuccess);
-		};
+				.off("validationFailed.looseValidation", $.proxy(this.showError, this))
+				.off("validationPassed.looseValidation", $.proxy(this.hideError, this))
+				.off("validationAddSuccess.looseValidation", $.proxy(this.addSuccess, this));
+		}
 
-		/**
-		* Init, self executing.
-		*/
-		var init = (function () {
-
-			//bind event handlers to target
-			_this.bind(eTarget);
-
-		}());
-
-		return this;
 	};
+
+	/**
+	* Validation reporter object
+	*/
+	_looseValidator.Reporter = Reporter;
 
 	window._looseValidator = _looseValidator;
 
