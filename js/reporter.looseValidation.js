@@ -29,7 +29,7 @@
 		* Set the insertion point for error and status messages
 		* This is to cope with search fields as they have a container div
 		*/
-		var getMsgInsertionPoint = function (eField) {
+		_this.getMsgInsertionPoint = function (eField) {
 			var insertionPoint = eField.data('insertionPoint'),
 				eParent, lastElement;
 
@@ -59,7 +59,7 @@
 		/**
 		* Show error
 		*/
-		var showError = function (event, stringMessageData) {
+		_this.showError = function (event, stringMessageData) {
 			var eField = $(event.target),
 				eInsertionPoint, eErrorMessage,
 				sErrorHTML = options.errorTemplate;
@@ -69,13 +69,13 @@
 
 			//remove and success message before continuing
 			if (options.enableSuccessMessages === true) {
-				removeSuccess(event);
+				_this.removeSuccess(event);
 			}
 
 			// get the message from the field
 			// check to see if field error already present create text and append next to field
 
-			eInsertionPoint = getMsgInsertionPoint(eField);
+			eInsertionPoint = _this.getMsgInsertionPoint(eField);
 			eErrorMessage = eInsertionPoint.siblings('p.' + options.errorMessageClass);
 
 			if (eErrorMessage.length === 0) {
@@ -93,15 +93,15 @@
 		/**
 		* Hide error
 		*/
-		var hideError = function (event) {
+		_this.hideError = function (event) {
 			var eField = $(event.target);
 
 			// remove fields error message
-			getMsgInsertionPoint(eField).siblings('p.' + options.errorMessageClass).remove();
+			_this.getMsgInsertionPoint(eField).siblings('p.' + options.errorMessageClass).remove();
 
 			/*var invalid = $(options.sValidationSelect).find('p.' + options.errorMessageClass).length;
 			if(invalid === 0 ){
-				showErrorBlock(false);
+				_this.showErrorBlock(false);
 			}*/
 			return this; // to chain the function
 		};
@@ -109,7 +109,7 @@
 		/**
 		* Get errorBlock element or create it if it does not exist
 		*/
-		var getErrorBlock = function () {
+		_this.getErrorBlock = function () {
 			var eServerErrorBlock = $(options.sServerErrorBlockSelect);
 			//create if not found
 			if (eServerErrorBlock.length <= 0) {
@@ -125,7 +125,7 @@
 		/**
 		* Show the errorBlock depending upon boolean
 		*/
-		var showErrorBlock = function (bShow) {
+		_this.showErrorBlock = function (bShow) {
 			if (bShow === true) {
 				eServerErrorBlock.html('<p class="errorCloud">Ooops!</p><p class="errorText">Something&lsquo;s gone a little bit skew-whiff. Please check and try again.</p>').fadeIn();
 			}
@@ -138,7 +138,7 @@
 		/**
 		* Add a success message
 		*/
-		var addSuccess = function (event, successData) {
+		_this.addSuccess = function (event, successData) {
 			var eField = $(event.target),
 				sSuccessClass = successData.successClass,
 				sSuccessMessage = successData.successMessage,
@@ -148,7 +148,7 @@
 
 			if (sSuccessMessage.length !== 0) {
 				//get the current success message
-				eInsertionPoint = getMsgInsertionPoint(eField);
+				eInsertionPoint = _this.getMsgInsertionPoint(eField);
 				eValid = eInsertionPoint.siblings('.' + options.sValidationPassedMessage);
 				if (eValid.length === 0) {
 					eInsertionPoint
@@ -157,7 +157,9 @@
 				}
 				//else if it was a function, always update
 				else if (bAlwaysUpdate === true) {
-					eValid.attr('class', sSuccessClass).html(sSuccessMessage);
+					eValid
+						.attr('class', sSuccessClass)
+						.html(sSuccessMessage);
 				}
 			}
 
@@ -167,23 +169,34 @@
 		/**
 		* Remove the success message
 		*/
-		var removeSuccess = function (event) {
+		_this.removeSuccess = function (event) {
 			var eField = $(event.target);
 
 			//remove related success messages
-			getMsgInsertionPoint(eField).siblings('.' + options.sValidationPassedMessage).remove();
+			_this.getMsgInsertionPoint(eField).siblings('.' + options.sValidationPassedMessage).remove();
 			return eField;
 		};
 
 		/**
 		* Bind the events on the form
 		*/
-		var bind = function (eTarget) {
+		_this.bind = function (eTarget) {
 			//validate any input that has been actioned
 			eTarget
-				.on("validationFailed.looseValidation", showError)
-				.on("validationPassed.looseValidation", hideError)
-				.on("validationAddSuccess.looseValidation", addSuccess);
+				.on("validationFailed.looseValidation", _this.showError)
+				.on("validationPassed.looseValidation", _this.hideError)
+				.on("validationAddSuccess.looseValidation", _this.addSuccess);
+		};
+
+		/**
+		* Bind the events on the form
+		*/
+		_this.unbind = function (eTarget) {
+			//validate any input that has been actioned
+			eTarget
+				.off("validationFailed.looseValidation", _this.showError)
+				.off("validationPassed.looseValidation", _this.hideError)
+				.off("validationAddSuccess.looseValidation", _this.addSuccess);
 		};
 
 		/**
@@ -192,7 +205,7 @@
 		var init = (function () {
 
 			//bind event handlers to target
-			bind(eTarget);
+			_this.bind(eTarget);
 
 		}());
 
