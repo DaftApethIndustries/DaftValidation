@@ -18,7 +18,9 @@
 		var _this = this,
 			defaults = {
 				useErrorBlock : false,
-				errorMessageClass : 'error'
+				errorMessageClass : 'error',
+				errorTemplate : '<p class="<%class%>"><%message%></p>',
+				successTemplate : '<p class="<%class%>"><%message%></p>'
 			},
 			options = $.extend({}, defaults, settings),
 			eServerErrorBlock;
@@ -28,7 +30,8 @@
 		*/
 		var showError = function (event, stringMessageData) {
 			var eField = $(event.target),
-				eInsertionPoint, eErrorMessage, sErrorHTML;
+				eInsertionPoint, eErrorMessage,
+				sErrorHTML = options.errorTemplate;
 
 			// check if the global message is visible and show if not
 			//if(eServerErrorBlock.css('display') === 'none'){ showErrorBlock(true); }
@@ -45,8 +48,9 @@
 			eErrorMessage = eInsertionPoint.siblings('p.' + options.errorMessageClass);
 
 			if (eErrorMessage.length === 0) {
-				sErrorHTML = '<p class="' + options.errorMessageClass + '">' +  stringMessageData + '</p>';
-				eInsertionPoint.after(sErrorHTML).fadeIn();
+				eInsertionPoint
+					.after(sErrorHTML.replace('<%class%>', options.errorMessageClass).replace('<%message%>', stringMessageData))
+					.fadeIn();
 
 			}
 			else if (eErrorMessage.text() !== stringMessageData) {
@@ -108,14 +112,17 @@
 				sSuccessClass = successData.successClass,
 				sSuccessMessage = successData.successMessage,
 				bAlwaysUpdate = successData.alwaysUpdate,
-				eInsertionPoint, eValid;
+				eInsertionPoint, eValid,
+				sSuccessHTML = options.errorTemplate;
 
 			if (sSuccessMessage.length !== 0) {
 				//get the current success message
 				eInsertionPoint = getMsgInsertionPoint(eField);
 				eValid = eInsertionPoint.siblings('.' + options.sValidationPassedMessage);
 				if (eValid.length === 0) {
-					eInsertionPoint.after('<p class="' + sSuccessClass + '">' + sSuccessMessage + '</p>').fadeIn();
+					eInsertionPoint
+						.after(sSuccessHTML.replace('<%class%>', sSuccessClass).replace('<%message%>', sSuccessMessage))
+						.fadeIn();
 				}
 				//else if it was a function, always update
 				else if (bAlwaysUpdate === true) {
