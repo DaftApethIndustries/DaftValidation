@@ -26,6 +26,37 @@
 			eServerErrorBlock;
 
 		/**
+		* Set the insertion point for error and status messages
+		* This is to cope with search fields as they have a container div
+		*/
+		var getMsgInsertionPoint = function (eField) {
+			var insertionPoint = eField.data('insertionPoint'),
+				eParent, lastElement;
+
+			if (insertionPoint !== undefined) {
+				return insertionPoint;
+			}
+			else {
+				eParent = eField.parent();
+				lastElement = eParent.find(':last-child');
+				if (eParent.hasClass('custom-select')) {
+					insertionPoint = eParent;
+				}
+				else if (eField[0].type === 'checkbox') {
+					insertionPoint = eField.next();
+				}
+				else if (eField.hasClass('hasDatepicker')) {
+					insertionPoint = lastElement;
+				}
+				else {
+					insertionPoint = eField;//.parent('.controls').find('label');
+				}
+				eField.data('insertionPoint', insertionPoint);
+				return insertionPoint;
+			}
+		};
+
+		/**
 		* Show error
 		*/
 		var showError = function (event, stringMessageData) {
@@ -142,37 +173,6 @@
 			//remove related success messages
 			getMsgInsertionPoint(eField).siblings('.' + options.sValidationPassedMessage).remove();
 			return eField;
-		};
-
-		/**
-		* Set the insertion point for error and status messages
-		* This is to cope with search fields as they have a container div
-		*/
-		var getMsgInsertionPoint = function (eField) {
-			var insertionPoint = eField.data('insertionPoint'),
-				eParent, lastElement;
-
-			if (insertionPoint !== undefined) {
-				return insertionPoint;
-			}
-			else {
-				eParent = eField.parent();
-				lastElement = eParent.find(':last-child');
-				if (eParent.hasClass('custom-select')) {
-					insertionPoint = eParent;
-				}
-				else if (eField[0].type === 'checkbox') {
-					insertionPoint = eField.next();
-				}
-				else if (eField.hasClass('hasDatepicker')) {
-					insertionPoint = lastElement;
-				}
-				else {
-					insertionPoint = eField;//.parent('.controls').find('label');
-				}
-				eField.data('insertionPoint', insertionPoint);
-				return insertionPoint;
-			}
 		};
 
 		/**
