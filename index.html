@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="css/style.css">
 
 
-<title>looseValidation</title>
+<title>DaftValidation</title>
 
 
 
@@ -19,7 +19,7 @@
 		
 
 
-<form novalidate="novalidate" action="#" class="looseValidation">
+<form novalidate="novalidate" action="#" class="daftValidation">
 
 	<h1>Validation examples</h1>
 <p>The validation works from JSON format data on the form elements.</p>
@@ -175,14 +175,14 @@
 		* Name will be how it is referred to in the data-validation rules array (here NewValidation)
 		* Function is the function used to validate the data (here exampleNewValidation)
 		*/
-		$('.looseValidation').looseValidation('addValidationFunction', 'NewValidation', exampleNewValidation);
+		$('.daftValidation').daftValidation('addValidationFunction', 'NewValidation', exampleNewValidation);
 
 		/**
 		* Set a success function. rootObject name will be your namespace
 		* Name will be how it is referred to in the data-success array (here NewSuccess)
 		* Function is the function to call (here newSuccessCallback)
 		*/
-		$('.looseValidation').looseValidation('addSuccessFunction', 'NewSuccess', newSuccessCallback);
+		$('.daftValidation').daftValidation('addSuccessFunction', 'NewSuccess', newSuccessCallback);
 
 
 		/*** USAGE ***/
@@ -197,18 +197,18 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js">\x3C/script>')</script>
 
-	<script src="js/reporter.looseValidation.js"></script>
-	<script src="js/validator.looseValidation.js"></script>
+	<script src="js/reporter.daftValidation.js"></script>
+	<script src="js/validator.daftValidation.js"></script>
 
 	<script>
 		$(document).ready(function() {
-			$('.looseValidation').looseValidation();
+			$('.daftValidation').daftValidation();
 		});
 
 		/*
 		* Defaults:
 
-				sValidationSelect : '.looseValidation',
+				sValidationSelect : '.daftValidation',
 				sValidationFailed : 'error',
 				sValidationPassed : 'valid',
 				sValidationPassedMessage : 'successMessage',

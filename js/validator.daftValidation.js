@@ -1,18 +1,18 @@
 /*jslint evil: false, jquery:true, forin: true, white: false, devel:true */
 /*!
- * LooseValidation plugin
- * Author: ryanand26 (2013) (http://www.looseideas.co.uk)
- * @version 0.4
+ * DaftValidation plugin
+ * Author: ryanand26 (2013) (http://www.daftapeth.co.uk)
+ * @version 0.5
 **/
 
 (function ($, undefined) {
 	"use strict";
 
 	//Main/Root object
-	var _looseValidator = window._looseValidator || {};
+	var _daftValidator = window._daftValidator || {};
 
 	/**
-	* Methods accessible through $('form').looseValidation();
+	* Methods accessible through $('form').daftValidation();
 	*/
 	var methods = {
 		init : function (settings) {
@@ -502,7 +502,7 @@
 					.attr('aria-invalid', 'true');
 			}
 
-			eField.trigger('validationFailed.looseValidation', stringMessageData);
+			eField.trigger('validationFailed.daftValidation', stringMessageData);
 
 			return this; // to chain the function
 		};
@@ -521,7 +521,7 @@
 					.attr('aria-invalid', 'false');
 			}
 
-			eField.trigger('validationPassed.looseValidation');
+			eField.trigger('validationPassed.daftValidation');
 
 			return this; // to chain the function
 		};
@@ -557,7 +557,7 @@
 			}
 
 			if (sSuccessMessage.length !== 0) {
-				eField.trigger('validationAddSuccess.looseValidation', {
+				eField.trigger('validationAddSuccess.daftValidation', {
 					"successClass" : sSuccessClass,
 					"successMessage" : sSuccessMessage,
 					"alwaysUpdate" : bAlwaysUpdate
@@ -575,9 +575,9 @@
 			//bind event handlers to target
 			bind(eTarget);
 
-			if (options.autoInitReporter === true && _looseValidator.Reporter !== undefined) {
-				var reporterInstance = new _looseValidator.Reporter(eTarget, options);
-				//var reporterInstance = new _looseValidator.ReporterBlock(eTarget, options);
+			if (options.autoInitReporter === true && _daftValidator.Reporter !== undefined) {
+				var reporterInstance = new _daftValidator.Reporter(eTarget, options);
+				//var reporterInstance = new _daftValidator.ReporterBlock(eTarget, options);
 			}
 
 		}());
@@ -588,7 +588,7 @@
 	/**
 	* Plugin binding
 	*/
-	$.fn.looseValidation = function (method) {
+	$.fn.daftValidation = function (method) {
 
 		// Method calling logic
 		// http://docs.jquery.com/Plugins/Authoring#Namespacing
@@ -599,11 +599,11 @@
 			return methods.init.apply(this, arguments);
 		}
 		else {
-			$.error('Method ' +  method + ' does not exist on jQuery.looseValidation');
+			$.error('Method ' +  method + ' does not exist on jQuery.daftValidation');
 		}
 
 	};
 
-	window._looseValidator = _looseValidator;
+	window._daftValidator = _daftValidator;
 
 }(jQuery));

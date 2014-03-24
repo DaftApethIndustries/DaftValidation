@@ -1,29 +1,29 @@
-#looseValidation
+#daftValidation
 ===============
 
 JS validation plugin that uses data attributes to hold functions and tests.
 
-(c) 2011 Ryan Mitchell (ryanand26@gmail.com)
+(c) 2011 Daft Apeth Industries (enquiries@daftapeth.co.uk)
 
 Released under The MIT License.
 
 ## Homepage:
 
-http://github.com/ryanand26/looseValidation
+http://github.com/ryanand26/daftValidation
 
 
 ## Usage:
 
 1. Insert the necessary elements in your document. CSS is optional, e.g.:
    
-		<script type='text/javascript' src='/js/looseValidation.js'></script>
+		<script type='text/javascript' src='/js/daftValidation.js'></script>
 
 
 2. Initialise, e.g.:
 
 		<script type='text/javascript'>
 			$(document).ready(function() {
-				$('.looseValidation').looseValidation();
+				$('.daftValidation').daftValidation();
 			});
 		</script>
 

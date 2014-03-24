@@ -1,15 +1,15 @@
 /*jslint evil: false, jquery:true, forin: true, white: false, devel:true */
 /*!
- * LooseValidation reporter
- * Author: ryanand26 (2013) (http://www.looseideas.co.uk)
- * @version 0.4
+ * DaftValidation reporter
+ * Author: ryanand26 (2013) (http://www.daftapeth.co.uk)
+ * @version 0.5
 **/
 
 (function ($, undefined) {
 	"use strict";
 
 	//Main/Root object
-	var _looseValidator = window._looseValidator || {};
+	var _daftValidation = window._daftValidation || {};
 
 	var defaults = {
 		useErrorBlock : false,
@@ -166,9 +166,9 @@
 		bind : function (eTarget) {
 			//watch for events
 			eTarget
-				.on("validationFailed.looseValidation", $.proxy(this.showError, this))
-				.on("validationPassed.looseValidation", $.proxy(this.hideError, this))
-				.on("validationAddSuccess.looseValidation", $.proxy(this.addSuccess, this));
+				.on("validationFailed.daftValidation", $.proxy(this.showError, this))
+				.on("validationPassed.daftValidation", $.proxy(this.hideError, this))
+				.on("validationAddSuccess.daftValidation", $.proxy(this.addSuccess, this));
 		},
 
 		/**
@@ -177,9 +177,9 @@
 		unbind : function (eTarget) {
 			//stop watching for events
 			eTarget
-				.off("validationFailed.looseValidation", $.proxy(this.showError, this))
-				.off("validationPassed.looseValidation", $.proxy(this.hideError, this))
-				.off("validationAddSuccess.looseValidation", $.proxy(this.addSuccess, this));
+				.off("validationFailed.daftValidation", $.proxy(this.showError, this))
+				.off("validationPassed.daftValidation", $.proxy(this.hideError, this))
+				.off("validationAddSuccess.daftValidation", $.proxy(this.addSuccess, this));
 		}
 
 	};
@@ -218,7 +218,8 @@
 	* Show the errorBlock depending upon boolean
 	*/
 	ReporterBlock.prototype.showErrorBlock = function (bShow) {
-		var errorBlockHTML = '<p class="errorCloud">Ooops!</p><p class="errorText">Something&lsquo;s gone a little bit skew-whiff. Please check and try again.</p>';
+		var errorBlockHTML = '<p class="errorCloud">Ooops!</p><p class="errorText">Something&lsquo;s gone a little bit skew-whiff. Please check and try again.</p>',
+			eServerErrorBlock = this.getErrorBlock();
 		if (bShow === true) {
 			eServerErrorBlock.html().fadeIn();
 		}
@@ -233,9 +234,9 @@
 	/**
 	* Validation reporter object
 	*/
-	_looseValidator.Reporter = Reporter;
-	_looseValidator.ReporterBlock = ReporterBlock;
+	_daftValidation.Reporter = Reporter;
+	_daftValidation.ReporterBlock = ReporterBlock;
 
-	window._looseValidator = _looseValidator;
+	window._daftValidation = _daftValidation;
 
 }(jQuery));

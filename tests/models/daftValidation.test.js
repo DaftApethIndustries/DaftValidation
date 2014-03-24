@@ -13,23 +13,23 @@ suite('Validator Contructor', function() {
     });
 
     test('Contructor should return Validation object', function() {
-        var form = $(this.formSelect).looseValidation();
+        var form = $(this.formSelect).daftValidation();
         expect(form.data('validator')).to.be.ok; // Tests this.user is truthy
     });
 
     test('Calling validate() multiple times must return the same validator instance', function() {
-        var v1 = $(this.formSelect).looseValidation().data('validator'),
-            v2 = $(this.formSelect).looseValidation().data('validator');
+        var v1 = $(this.formSelect).daftValidation().data('validator'),
+            v2 = $(this.formSelect).daftValidation().data('validator');
 
         expect(v1).to.equal(v2);
     });
 
     test("addValidationFunction() plugin method exists", function() {
-        expect($(this.formSelect).looseValidation('addValidationFunction')).to.exist;
+        expect($(this.formSelect).daftValidation('addValidationFunction')).to.exist;
     });
 
     test("addSuccessFunction() plugin method exists", function() {
-        expect($(this.formSelect).looseValidation('addSuccessFunction')).to.exist;
+        expect($(this.formSelect).daftValidation('addSuccessFunction')).to.exist;
     });
 
 });
@@ -41,7 +41,7 @@ suite('Validator Test Functions', function() {
 
     setup(function() {
         this.formSelect = '.ruleTests';
-        this.form = $(this.formSelect).looseValidation();
+        this.form = $(this.formSelect).daftValidation();
         this.textfield = $('#required-a');
         this.select = $('#required-select-a');
         this.checkbox = $('#required-checkbox-a');
@@ -107,8 +107,8 @@ suite('Validator Test Functions', function() {
 suite('Validator Input Binding', function() {
 
     setup(function() {
-        this.formSelect = '.looseValidation';
-        this.form = $(this.formSelect).looseValidation();
+        this.formSelect = '.daftValidation';
+        this.form = $(this.formSelect).daftValidation();
         this.textfield = $('#required');
         this.select = $('#required-select');
 
@@ -189,8 +189,8 @@ suite('Validator Input Binding', function() {
 suite('Validator Form Binding', function() {
 
     setup(function() {
-        this.formSelect = '.looseValidation';
-        this.form = $(this.formSelect).looseValidation();
+        this.formSelect = '.daftValidation';
+        this.form = $(this.formSelect).daftValidation();
         this.textfield = $('#required');
         this.select = $('#required-select');
 
